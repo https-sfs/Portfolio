@@ -39,16 +39,38 @@ export function TechStackSection() {
                     <h3 className="font-display font-bold text-neutral-900 dark:text-white">
                       {group.category}
                     </h3>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {group.items.map((item) => (
-                        <span
-                          key={item}
-                          className="rounded-md bg-neutral-100 px-2 py-1 font-mono text-[11px] text-neutral-600 transition hover:bg-neutral-900 hover:text-white dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-white dark:hover:text-neutral-900"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
+                    {group.groups?.length ? (
+                      <div className="mt-4 space-y-3">
+                        {group.groups.map((subgroup) => (
+                          <div key={subgroup.label}>
+                            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                              {subgroup.label}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {subgroup.items.map((item) => (
+                                <span
+                                  key={item}
+                                  className="rounded-md bg-neutral-100 px-2 py-1 font-mono text-[11px] text-neutral-600 transition hover:bg-neutral-900 hover:text-white dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-white dark:hover:text-neutral-900"
+                                >
+                                  {item}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {group.items.map((item) => (
+                          <span
+                            key={item}
+                            className="rounded-md bg-neutral-100 px-2 py-1 font-mono text-[11px] text-neutral-600 transition hover:bg-neutral-900 hover:text-white dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-white dark:hover:text-neutral-900"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </article>
                 ))}
               </div>

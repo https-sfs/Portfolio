@@ -51,11 +51,11 @@ export function ServicesSection({
                     open ? "" : "hover:bg-white/50 dark:hover:bg-white/5"
                   }`}
                 >
-                  <div className="flex items-center gap-4 sm:gap-6">
-                    <span className="font-mono text-sm text-neutral-400">
+                  <div className="flex min-w-0 items-center gap-4 sm:gap-6">
+                    <span className="shrink-0 font-mono text-sm text-neutral-400">
                       {service.index}
                     </span>
-                    <h3 className="font-display text-lg font-bold uppercase tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+                    <h3 className="min-w-0 font-display text-lg font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
                       {service.title}
                     </h3>
                   </div>

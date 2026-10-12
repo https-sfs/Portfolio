@@ -230,7 +230,7 @@ function InnerSite({ anchors = false, time }: { anchors?: boolean; time: string 
 
       <IntroSection />
 
-      <WorkSection id={anchors ? "work" : undefined} />
+      <WorkSection />
       <InnerAfterWork />
     </div>
   );

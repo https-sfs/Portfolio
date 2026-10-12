@@ -19,7 +19,7 @@ export const site = {
 };
 
 export const navItems = [
-  { id: "work", label: "Work", badge: "7" },
+  { id: "work", label: "Work", badge: "4" },
   { id: "services", label: "Services", badge: "4" },
   { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },

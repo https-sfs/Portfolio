@@ -1,28 +1,58 @@
-export const skillGroups = [
+export type SkillGroup = {
+  category: string;
+  tint: "emerald" | "sky" | "purple" | "amber" | "neutral";
+  items: string[];
+  groups?: { label: string; items: string[] }[];
+};
+
+export const skillGroups: SkillGroup[] = [
   {
     category: "Frontend",
     tint: "emerald",
-    items: ["React", "Vite", "Tailwind CSS", "GSAP", "JavaScript", "HTML", "CSS"],
+    items: ["React", "TypeScript", "Vite", "Tailwind CSS", "GSAP", "shadcn/ui"],
   },
   {
-    category: "Mobile",
+    category: "Mobile Development",
     tint: "sky",
-    items: ["Flutter", "Firebase", "Dart"],
+    items: ["Flutter", "Dart", "Firebase"],
   },
   {
-    category: "Backend",
+    category: "Backend & Data",
     tint: "purple",
-    items: ["Java", "Spring Boot", "MySQL"],
+    items: [
+      "Java",
+      "Spring Boot",
+      "REST API",
+      "Python",
+      "FastAPI",
+      "SQLite",
+      "Supabase",
+      "Machine Learning",
+    ],
   },
   {
-    category: "Practice",
+    category: "Embedded Systems & IoT",
     tint: "amber",
-    items: ["Responsive UI", "Scroll motion", "Component systems"],
+    items: ["Arduino", "C/C++", "Ultrasonic Sensors", "Embedded Systems"],
   },
   {
-    category: "Tools",
+    category: "Tools & Engineering Practice",
     tint: "neutral",
-    items: ["Git", "VS Code", "Android Studio"],
+    items: [
+      "Git",
+      "VS Code",
+      "Android Studio",
+      "Responsive UI",
+      "Scroll-driven Motion",
+      "Component Systems",
+    ],
+    groups: [
+      { label: "Tools", items: ["Git", "VS Code", "Android Studio"] },
+      {
+        label: "Practice",
+        items: ["Responsive UI", "Scroll-driven Motion", "Component Systems"],
+      },
+    ],
   },
 ];
 

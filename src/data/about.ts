@@ -1,8 +1,7 @@
 export const aboutCopy = {
   eyebrow: "/ABOUT & APPROACH",
-  headline:
-    "I build web, mobile, and backend products with a clear, practical engineering approach.",
-  body: "I'm a Mobile App and Web Developer and a BE Computer Science and Engineering student at Lords Institute of Engineering and Technology, graduating in 2027. My work so far includes corporate web experiences, Flutter applications, and a Spring Boot management system.",
+  headline: "I build the interface, the logic behind it, and sometimes the hardware on the bench.",
+  body: "I'm a Mobile App and Web Developer and a BE Computer Science and Engineering student at Lords Institute of Engineering and Technology, graduating in 2027. My work spans interactive websites, Flutter applications, React web products, backend-oriented systems with machine-learning-related analysis, and an embedded student prototype. I like turning a product idea into something people can actually use, and I keep learning across the stack to get there.",
   manifest: {
     filename: "profile_manifest.json",
     fields: [
@@ -19,28 +18,28 @@ export const aboutApproach = [
   {
     index: "01",
     title: "Focus",
-    desc: "Interactive websites, Flutter applications, and Spring Boot backends.",
+    desc: "Interactive websites, Flutter apps for live event work, React products for community workflows, backend systems for analysis and operations, and an assistive hardware prototype.",
   },
   {
     index: "02",
     title: "Approach",
-    desc: "Clear product structure, careful interface motion, and implementation I can stand behind.",
+    desc: "I start from the flow a person actually needs, keep interfaces readable, use motion when it helps, and implement against the project's real requirements — not a generic architecture.",
   },
   {
     index: "03",
     title: "Stack",
-    desc: "React, Vite, Tailwind CSS, GSAP, Flutter, Firebase, Java, Spring Boot, MySQL.",
+    desc: "React, TypeScript, Vite, Tailwind CSS, and GSAP on the web; Flutter, Dart, and Firebase on mobile; Java, Spring Boot, Python, FastAPI, and SQLite on the backend — with Supabase or Arduino on the projects that need them.",
   },
 ];
 
 export const aboutStandards = [
   {
     title: "Engineering Practice",
-    desc: "Keep interfaces precise, motion intentional, and backends structured around real product needs.",
+    desc: "Clear interfaces, useful workflows, and structured implementations sized to each project's requirements — not a heavier system than the work calls for.",
   },
   {
     title: "Current Chapter",
-    desc: "BE in Computer Science and Engineering at Lords Institute of Engineering and Technology, class of 2027.",
+    desc: "Currently studying BE Computer Science and Engineering at Lords Institute of Engineering and Technology, graduating in 2027.",
   },
 ];
 

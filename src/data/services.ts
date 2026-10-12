@@ -13,14 +13,15 @@ export const services: Service[] = [
   {
     id: "interactive-web",
     index: "01",
-    title: "INTERACTIVE WEB EXPERIENCES",
-    filename: "interactive-web.service.ts",
+    title: "WEB EXPERIENCES & FRONTEND ENGINEERING",
+    filename: "web-experiences.service.ts",
     description:
-      "Building corporate and product websites with React, Vite, Tailwind CSS, and scroll-driven GSAP motion.",
+      "Building responsive websites and interactive digital experiences that combine thoughtful interface design, reusable components, and purposeful motion.",
     whatIBuild:
-      "Marketing sites, landing sequences, and component systems with intentional motion and a clear visual hierarchy.",
-    technologies: ["React", "Vite", "Tailwind CSS", "GSAP"],
-    useCases: "Corporate websites such as Gee Cee Supplements.",
+      "Responsive page layouts, reusable UI components, interactive landing pages, animation sequences, and frontend integrations designed around clear user journeys.",
+    technologies: ["React", "TypeScript", "JavaScript", "Vite", "Tailwind CSS", "GSAP"],
+    useCases:
+      "Gee Cee Supplements — immersive website visuals and GSAP motion; GenZrix — web product development; FoodLink — a React-based food redistribution platform.",
   },
   {
     id: "mobile-apps",
@@ -28,34 +29,46 @@ export const services: Service[] = [
     title: "MOBILE APPLICATION DEVELOPMENT",
     filename: "mobile-apps.service.ts",
     description:
-      "Shipping Flutter applications with Firebase for event operations and community products.",
+      "Developing cross-platform mobile applications with practical navigation, clear user flows, and features built around real event and community needs.",
     whatIBuild:
-      "Cross-platform mobile apps with authentication, live data, and practical organizer or donor workflows.",
-    technologies: ["Flutter", "Firebase"],
-    useCases: "HackPrix Organizer App and FoodLink.",
+      "Mobile interfaces, event information flows, seat allocation experiences, announcements, and application workflows designed to make essential tasks easier to complete.",
+    technologies: ["Flutter", "Dart", "Firebase"],
+    useCases:
+      "HackPrix Organizer App — participant information, seat allocation, schedules, announcements, and event operations.",
   },
   {
     id: "backend-systems",
     index: "03",
-    title: "BACKEND & DATA SYSTEMS",
+    title: "BACKEND, APIs & DATA SYSTEMS",
     filename: "backend-systems.service.ts",
     description:
-      "Designing application backends with Java, Spring Boot, and relational data in MySQL.",
+      "Building application logic, API-driven workflows, and data-backed systems that support structured operations, analysis, and reliable information management.",
     whatIBuild:
-      "Service layers, persistence models, and management workflows for operational products.",
-    technologies: ["Java", "Spring Boot", "MySQL"],
-    useCases: "Chocolate Factory management system.",
+      "Backend services, API integrations, data persistence, structured investigation workflows, and management-system logic grounded in the requirements of each project.",
+    technologies: ["Java", "Spring Boot", "Python", "FastAPI", "SQLite", "REST APIs"],
+    useCases:
+      "RIXO — risk-intelligence analysis, structured investigation workflows, and an auditable approval process; Chocolate Factory — a Java and Spring Boot management system.",
   },
   {
     id: "product-delivery",
     index: "04",
-    title: "PRODUCT DELIVERY",
-    filename: "product-delivery.service.ts",
+    title: "SYSTEMS ENGINEERING & PRODUCT INTEGRATION",
+    filename: "systems-engineering.service.ts",
     description:
-      "Taking an idea from structure to a working interface, whether that is a website, a mobile app, or a management backend.",
+      "Bringing interfaces, application logic, external services, and hardware prototypes together to turn project requirements into working, demonstrable solutions.",
     whatIBuild:
-      "End-to-end student and competition products with a focus on clarity, usable flows, and a finished presentation.",
-    technologies: ["React", "Flutter", "Spring Boot", "Firebase"],
-    useCases: "Hackathon delivery, including FoodLink at App Fusion 2.0.",
+      "End-to-end project workflows, connected application components, third-party service integrations, prototype development, and practical validation of complete user journeys.",
+    technologies: [
+      "React",
+      "Flutter",
+      "Java",
+      "Spring Boot",
+      "Firebase",
+      "Supabase",
+      "Arduino",
+      "C/C++",
+    ],
+    useCases:
+      "GenZrix — web product development; HackPrix — event application workflows; FoodLink — community food redistribution; NiGAH — an assistive-technology prototype using Arduino and sensors.",
   },
 ];

@@ -38,8 +38,10 @@ export function MacWindow({
         <MacDots />
         {filename ? (
           <span
+            title={filename}
+            aria-label={filename}
             className={cn(
-              "ml-2 font-mono text-[11px] tracking-wide",
+              "ml-2 min-w-0 truncate font-mono text-[11px] tracking-wide",
               dark ? "text-neutral-400" : "text-neutral-500",
             )}
           >
