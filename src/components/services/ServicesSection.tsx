@@ -7,18 +7,36 @@ import { MacWindow } from "@/components/ui/MacWindow";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionEyebrow } from "@/components/ui/SectionEyebrow";
 
-export function ServicesSection() {
+export function ServicesSection({
+  id,
+  compact = false,
+}: {
+  id?: string;
+  compact?: boolean;
+}) {
   const [openId, setOpenId] = useState(services[0].id);
 
   return (
-    <section id="services" className="px-4 py-20 sm:px-6 sm:py-32 md:px-12">
+    <section
+      id={id}
+      className={`services-section${compact ? " is-compact" : ""} px-4 py-20 sm:px-6 sm:py-32 md:px-12`}
+    >
       <div className="mx-auto max-w-7xl">
-        <Reveal>
-          <SectionEyebrow>/SERVICES &amp; CAPABILITIES</SectionEyebrow>
-          <h2 className="font-display text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
-            Core Engineering Practice
-          </h2>
-        </Reveal>
+        {compact ? (
+          <div>
+            <SectionEyebrow>/SERVICES &amp; CAPABILITIES</SectionEyebrow>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+              Core Engineering Practice
+            </h2>
+          </div>
+        ) : (
+          <Reveal>
+            <SectionEyebrow>/SERVICES &amp; CAPABILITIES</SectionEyebrow>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+              Core Engineering Practice
+            </h2>
+          </Reveal>
+        )}
 
         <div className="mt-10 divide-y divide-neutral-200/80 dark:divide-neutral-800">
           {services.map((service) => {

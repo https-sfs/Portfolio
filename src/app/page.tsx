@@ -2,7 +2,6 @@ import { Header } from "@/components/chrome/Header";
 import { Footer } from "@/components/chrome/Footer";
 import { ScrollProgress } from "@/components/chrome/ScrollProgress";
 import { FoldfolioHero } from "@/components/hero/FoldfolioHero";
-import { WorkSection } from "@/components/work/WorkSection";
 import { ServicesSection } from "@/components/services/ServicesSection";
 import { AboutSection } from "@/components/about/AboutSection";
 import { AiEngineeringSection } from "@/components/ai/AiEngineeringSection";
@@ -17,8 +16,7 @@ export default function HomePage() {
       <Header />
       <main>
         <FoldfolioHero />
-        <WorkSection />
-        <ServicesSection />
+        <ServicesSection id="services" />
         <AboutSection />
         <AiEngineeringSection />
         <TechStackSection />

@@ -9,7 +9,7 @@ export const site = {
   availability: "Available for new opportunities",
   availabilityShort: "Available",
   email: "",
-  github: "",
+  github: "https://github.com/https-sfs",
   whatsapp: "",
   metaTitle: "Saboohi Fatima Shafia — Mobile App and Web Developer",
   metaDescription:
@@ -19,7 +19,7 @@ export const site = {
 };
 
 export const navItems = [
-  { id: "work", label: "Work", badge: "4" },
+  { id: "work", label: "Work", badge: "7" },
   { id: "services", label: "Services", badge: "4" },
   { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { Anton, Inter, Manrope, Instrument_Serif } from "next/font/google";
 import { Providers } from "@/components/chrome/Providers";
 import { DevMark } from "@/components/chrome/DevMark";
 import { site } from "@/data/site";
@@ -18,6 +18,21 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-serif",
+  display: "swap",
+});
+
+const anton = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-condensed",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: site.metaTitle,
   description: site.metaDescription,
@@ -33,7 +48,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${manrope.variable}`}
+      className={`${inter.variable} ${manrope.variable} ${instrument.variable} ${anton.variable}`}
     >
       <head>
         <meta name="theme-color" content="#eef0f2" />

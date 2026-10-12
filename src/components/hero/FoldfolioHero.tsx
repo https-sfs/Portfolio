@@ -1,42 +1,72 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Code2, Github, Leaf, Linkedin } from "lucide-react";
 import { site } from "@/data/site";
-import { featuredProjects } from "@/data/projects";
-import { services } from "@/data/services";
-import { aboutCopy } from "@/data/about";
+import { scrollToId } from "@/lib/utils";
+import { IntroSection } from "@/components/intro/IntroSection";
+import { WorkSection } from "@/components/work/WorkSection";
+import { FOLD_DO_REVEAL, InnerAfterWork } from "@/components/fold/InnerAfterWork";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STATS = [
-  { n: "4", l: "Shipped products" },
-  { n: "2027", l: "Graduation year" },
-  { n: "2nd", l: "App Fusion 2.0" },
-  { n: "3", l: "Platforms in play" },
-];
-
 const NOTICES = [
-  { title: "Gee Cee is live", meta: "Corporate site · now", swatch: "#10b981" },
-  { title: "FoodLink — 2nd place", meta: "App Fusion 2.0 · 2h ago", swatch: "#f59e0b" },
+  {
+    title: "Gee Cee Supplements",
+    subtitle: "Website live",
+    time: "now",
+    kind: "live" as const,
+  },
+  {
+    title: "IIT Bombay CodeDecode",
+    subtitle: "2nd Runner-Up",
+    time: "2h ago",
+    kind: "award" as const,
+  },
 ];
 
-const INNER_NAV = [
-  { id: "home", label: "Home", at: 0.14 },
-  { id: "work", label: "Work", at: 0.29 },
-  { id: "services", label: "Services", at: 0.44 },
-  { id: "about", label: "About", at: 0.52 },
-  { id: "contact", label: "Contact", at: 0.58 },
+const INNER_NAV: Array<{ id: string; label: string; sel?: string; outer?: string }> = [
+  { id: "home", label: "Home", sel: ".fold-inner-home" },
+  { id: "work", label: "Work", sel: ".work-section" },
+  { id: "about", label: "About", sel: ".fold-close" },
+  { id: "contact", label: "Contact", outer: "contact" },
 ];
+
+const UNFOLD_START = 0.012;
+const UNFOLD_SPAN = 0.12;
+const TRAVEL_START = 0.14;
+const TRAVEL_SPAN = 0.5;
+const CLOSE_START = 0.655;
+const CLOSE_SPAN = 0.155;
+const TITLE_START = 0.8;
+const TITLE_SPAN = 0.14;
+
+function innerProgress(sel: string) {
+  const inner = document.querySelector<HTMLElement>("[data-fold-inner]");
+  const frame = inner?.parentElement;
+  const target = inner?.querySelector<HTMLElement>(sel);
+  if (!inner || !frame || !target) return TRAVEL_START;
+  const max = Math.max(1, inner.scrollHeight - frame.clientHeight);
+  return TRAVEL_START + TRAVEL_SPAN * gsap.utils.clamp(0, 1, target.offsetTop / max);
+}
+
+const SERIF_LINES = [
+  ["that", "are", "meant", "to", "be", "used", "—"],
+  ["not", "just", "presented."],
+] as const;
 
 function useLockTime() {
   const [time, setTime] = useState("09:41");
   useEffect(() => {
     const fmt = () =>
-      new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
     setTime(fmt());
     const id = window.setInterval(() => setTime(fmt()), 15_000);
     return () => window.clearInterval(id);
@@ -52,20 +82,29 @@ function scrollHeroTo(section: HTMLElement, at: number) {
 function IncomingCall() {
   return (
     <div className="fold-call-ui">
+      <div className="fold-call-wallpaper" aria-hidden>
+        <Image
+          src="/fold/incoming-call-wallpaper.jpg"
+          alt=""
+          fill
+          sizes="(max-width: 767px) 70vw, 340px"
+          unoptimized
+        />
+      </div>
       <div className="fold-call-head">
-        <p className="fold-call-name">{site.firstName}</p>
-        <p className="fold-call-last">{site.lastName}</p>
+        <p className="fold-call-name">SABOOHI</p>
+        <p className="fold-call-last">FATIMA SHAFIA</p>
         <p className="fold-call-sub">Incoming call · about your next project</p>
       </div>
       <div className="fold-call-avatar" aria-hidden>
-        SF
+        SFS
       </div>
       <div className="fold-call-foot">
         <div className="fold-call-slider">
           <span className="fold-call-handle" aria-hidden />
           <span>slide to talk</span>
         </div>
-        <p className="fold-call-mail">{site.email || site.availability}</p>
+        <p className="fold-call-mail">AVAILABLE FOR NEW OPPORTUNITIES</p>
       </div>
     </div>
   );
@@ -74,140 +113,125 @@ function IncomingCall() {
 function LockScreen({ time }: { time: string }) {
   return (
     <div className="fold-lock-ui">
+      <div className="fold-lock-wallpaper" aria-hidden>
+        <Image
+          src="/fold/ribbon-wallpaper-final.jpg"
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 767px) 70vw, 340px"
+        />
+      </div>
       <div className="fold-lock-hero">
         <p className="fold-clock">{time}</p>
-        <p className="fold-lock-role">{site.role}</p>
+        <p className="fold-lock-role">Mobile App &amp; Web Developer</p>
+        <p className="fold-lock-place">Hyderabad · India</p>
       </div>
-      <div className="fold-lock-portrait" aria-hidden>
-        <span>SF</span>
-      </div>
+      <div className="fold-lock-mid" aria-hidden />
       <div className="fold-notices">
         {NOTICES.map((item) => (
-          <article key={item.title} className="fold-notice">
-            <i style={{ background: item.swatch }} />
+          <article key={item.title} className={`fold-notice is-${item.kind}`}>
+            <span className="fold-notice-icon" aria-hidden>
+              {item.kind === "live" ? <Leaf size={14} strokeWidth={2.25} /> : <Code2 size={14} strokeWidth={2.25} />}
+            </span>
             <div>
               <p>{item.title}</p>
-              <p>{item.meta}</p>
+              <p>{item.subtitle}</p>
+            </div>
+            <div className="fold-notice-meta">
+              <i />
+              <span>{item.time}</span>
             </div>
           </article>
         ))}
       </div>
       <div className="fold-dock">
-        <span className="fold-dock-btn" aria-hidden />
+        {site.github ? (
+          <a className="fold-dock-btn" href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+            <Github size={17} strokeWidth={2} />
+          </a>
+        ) : (
+          <span className="fold-dock-btn" aria-hidden>
+            <Github size={17} strokeWidth={2} />
+          </span>
+        )}
         <span className="fold-unfold-pill">Scroll to unfold</span>
-        <span className="fold-dock-btn is-x" aria-hidden />
+        <span className="fold-dock-btn" aria-hidden>
+          <Linkedin size={17} strokeWidth={2} />
+        </span>
       </div>
     </div>
   );
 }
 
-function InnerSite({ anchors = false }: { anchors?: boolean }) {
+function InnerSite({ anchors = false, time }: { anchors?: boolean; time: string }) {
   return (
     <div className="fold-inner" data-fold-inner>
       <section className="fold-inner-home">
+        <div className="fold-home-art" aria-hidden>
+          <Image
+            src="/fold/home-ribbon.jpg"
+            alt=""
+            fill
+            sizes="(max-width: 767px) 94vw, 1200px"
+            priority
+          />
+        </div>
         <div className="fold-inner-copy">
-          <p className="fold-status-mini">
-            <span>09:41</span>
-            <span>{site.role}</span>
+          <p className="fold-status-mini fold-reveal fold-reveal-a">
+            <span>{time}</span>
+            <span>Mobile App &amp; Web Developer</span>
           </p>
-          <h2>
-            {site.firstName} {site.lastName}
-          </h2>
-          <p className="fold-lead">
-            I build web, mobile, and backend products that are meant to be used — not just
-            presented.
-          </p>
-          <div className="fold-cta-row">
-            <button type="button" data-fold-jump="0.29">
-              See the work
-            </button>
-            <button type="button" className="ghost" data-fold-jump="0.58">
-              Say hello
-            </button>
-          </div>
-        </div>
-        <div className="fold-inner-portrait" aria-hidden>
-          <span>SF</span>
-        </div>
-      </section>
-
-      <section className="fold-inner-stats" aria-label="Numbers">
-        <p>A few numbers</p>
-        <div>
-          {STATS.map((item) => (
-            <div key={item.l}>
-              <strong>{item.n}</strong>
-              <span>{item.l}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="fold-inner-work" id={anchors ? "work" : undefined}>
-        <div className="fold-inner-work-head">
-          <h2>Selected work</h2>
-          <span>All projects</span>
-        </div>
-        {featuredProjects.map((project, index) => {
-          const href = project.links.frontend ?? `/work/${project.slug}`;
-          const external = Boolean(project.links.frontend);
-          const body = (
-            <>
-              <div className="fold-case-visual" style={{ background: project.accentColor }}>
-                <b>0{index + 1}</b>
-              </div>
-              <div className="fold-case-copy">
-                <span>
-                  0{index + 1} {project.category}
+          <div className="fold-home-message">
+            <h2 className="fold-home-title">
+              <span className="sr-only">
+                Building digital products that are meant to be used — not just presented.
+              </span>
+              <span className="fold-home-kicker-line" aria-hidden>
+                <span className="fold-home-kicker fold-reveal fold-reveal-b">Building</span>
+                <span className="fold-home-kicker fold-reveal fold-reveal-c">digital</span>
+              </span>
+              <span className="fold-home-kicker fold-reveal fold-reveal-d" aria-hidden>
+                products
+              </span>
+            </h2>
+            <p className="fold-home-serif">
+              <span className="sr-only">that are meant to be used — not just presented.</span>
+              {SERIF_LINES.map((line, lineIndex) => (
+                <span className="fold-home-serif-line" aria-hidden key={line.join("-")}>
+                  {line.map((word, wordIndex) => {
+                    const index = (lineIndex === 0 ? 0 : SERIF_LINES[0].length) + wordIndex;
+                    return (
+                      <span
+                        className="fold-word"
+                        key={`${lineIndex}-${word}`}
+                        style={{ ["--i"]: index } as CSSProperties}
+                      >
+                        {word}
+                      </span>
+                    );
+                  })}
                 </span>
-                <strong>{project.title}</strong>
-                <em>{project.shortDescription}</em>
-                <b>
-                  View project <ArrowUpRight size={14} />
-                </b>
-              </div>
-            </>
-          );
-          return external ? (
-            <a key={project.slug} href={href} target="_blank" rel="noreferrer" className="fold-case">
-              {body}
-            </a>
-          ) : (
-            <Link key={project.slug} href={href} className="fold-case">
-              {body}
-            </Link>
-          );
-        })}
+              ))}
+            </p>
+            <div className="fold-cta-row fold-reveal fold-reveal-g">
+              <button type="button" data-fold-jump="work">
+                Explore my work <ArrowUpRight size={14} />
+              </button>
+              <button type="button" className="ghost" data-fold-jump="contact">
+                Let&apos;s talk <ArrowUpRight size={14} />
+              </button>
+            </div>
+          </div>
+          <p className="fold-home-place fold-reveal fold-reveal-g">Hyderabad · India</p>
+        </div>
+        <div className="fold-inner-portrait" aria-hidden />
       </section>
 
-      <section className="fold-inner-services" id={anchors ? "services" : undefined}>
-        <p>What I do</p>
-        <ul>
-          {services.map((service) => (
-            <li key={service.id}>
-              <span>{service.index}</span>
-              <div>
-                <strong>{service.title}</strong>
-                <p>{service.whatIBuild}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <IntroSection />
 
-      <section className="fold-inner-about" id={anchors ? "about" : undefined}>
-        <p>{aboutCopy.eyebrow}</p>
-        <h2>{aboutCopy.headline}</h2>
-        <p>{aboutCopy.body}</p>
-      </section>
-
-      <section className="fold-inner-contact" id={anchors ? "contact" : undefined}>
-        <p>Have a brief that needs a build?</p>
-        <h2>Start a project</h2>
-        <p>
-          {site.availability}. {site.degree} at {site.college}.
-        </p>
-      </section>
+      <WorkSection id={anchors ? "work" : undefined} />
+      <InnerAfterWork />
     </div>
   );
 }
@@ -218,6 +242,7 @@ export function FoldfolioHero() {
   const bookRef = useRef<HTMLDivElement>(null);
   const namesRef = useRef<HTMLDivElement>(null);
   const finaleRef = useRef<HTMLDivElement>(null);
+  const cueRef = useRef<HTMLDivElement>(null);
   const introDoneRef = useRef(false);
   const [reduced, setReduced] = useState(false);
   const [active, setActive] = useState("home");
@@ -237,6 +262,7 @@ export function FoldfolioHero() {
     const book = bookRef.current;
     const names = namesRef.current;
     const finale = finaleRef.current;
+    const cue = cueRef.current;
     if (!section || !pin || !book) return;
 
     const inners = book.querySelectorAll<HTMLElement>("[data-fold-inner]");
@@ -258,13 +284,13 @@ export function FoldfolioHero() {
     };
 
     const apply = (progress: number) => {
-      const unfoldIn = gsap.utils.clamp(0, 1, (progress - 0.012) / 0.11);
-      const closeIn = gsap.utils.clamp(0, 1, (progress - 0.64) / 0.16);
-      const titleIn = gsap.utils.clamp(0, 1, (progress - 0.81) / 0.08);
+      const unfoldIn = gsap.utils.clamp(0, 1, (progress - UNFOLD_START) / UNFOLD_SPAN);
+      const closeIn = gsap.utils.clamp(0, 1, (progress - CLOSE_START) / CLOSE_SPAN);
+      const titleIn = gsap.utils.clamp(0, 1, (progress - TITLE_START) / TITLE_SPAN);
       const openU = unfoldIn * unfoldIn * (3 - 2 * unfoldIn);
       const closeU = closeIn * closeIn * (3 - 2 * closeIn);
       const u = openU * (1 - closeU);
-      const travel = gsap.utils.clamp(0, 1, (progress - 0.14) / 0.46);
+      const travel = gsap.utils.clamp(0, 1, (progress - TRAVEL_START) / TRAVEL_SPAN);
       const dim = size();
       book.style.width = `${dim.closedW * 2 + (dim.openW - dim.closedW * 2) * u}px`;
       book.style.height = `${dim.closedH + (dim.openH - dim.closedH) * u}px`;
@@ -272,6 +298,8 @@ export function FoldfolioHero() {
       book.style.setProperty("--fold", `${(179.2 * (1 - u)).toFixed(3)}deg`);
       book.style.setProperty("--spine", gsap.utils.clamp(0, 1, (u - 0.04) / 0.12).toFixed(3));
       book.classList.toggle("is-open", u > 0.42);
+      if (u > 0.74 && closeU < 0.06) book.classList.add("is-home-in");
+      if (u < 0.36 || closeU > 0.22) book.classList.remove("is-home-in");
       book.style.setProperty("--call", closeU.toFixed(3));
       pin.style.setProperty("--phone-col", `${Math.round(dim.closedW + (window.innerWidth < 768 ? 12 : 64))}px`);
       if (line && (introDoneRef.current || progress > 0.008)) {
@@ -285,19 +313,57 @@ export function FoldfolioHero() {
         names.style.opacity = String(nameOp);
         names.style.visibility = nameOp < 0.02 ? "hidden" : "visible";
       }
+      const titleOp = closeU > 0.97 ? titleIn : 0;
       if (finale) {
-        const titleOp = closeU > 0.97 ? titleIn : 0;
         finale.style.opacity = String(titleOp);
         finale.style.visibility = titleOp < 0.02 ? "hidden" : "visible";
+      }
+      if (cue) {
+        const hold = gsap.utils.clamp(0, 1, (titleOp - 0.88) / 0.12);
+        const leave = gsap.utils.clamp(0, 1, (0.988 - progress) / 0.025);
+        const cueOp = hold * leave;
+        cue.style.opacity = String(cueOp);
+        cue.style.visibility = cueOp < 0.02 ? "hidden" : "visible";
       }
       inners.forEach((node) => {
         const frame = node.parentElement;
         if (!frame) return;
         const max = Math.max(0, node.scrollHeight - frame.clientHeight);
         node.style.transform = `translateY(${(-travel * max).toFixed(1)}px)`;
+        const close = node.querySelector<HTMLElement>(".fold-close");
+        const heading = close?.querySelector<HTMLElement>(".fold-do-heading");
+        const list = close?.querySelector<HTMLElement>(".fold-do-list");
+        if (close && heading && list && close.dataset.foldRevealed !== "1") {
+          const y = travel * max;
+          const view = frame.clientHeight;
+          const top = close.offsetTop;
+          const frameRect = frame.getBoundingClientRect();
+          const headRect = heading.getBoundingClientRect();
+          const listRect = list.getBoundingClientRect();
+          const headingVisible =
+            headRect.bottom > frameRect.top + 12 && headRect.top < frameRect.bottom - 36;
+          const stripsWatchable = listRect.top < frameRect.bottom - 56;
+          const reachedByTravel = y + view * 0.52 >= top;
+          const scrolledPast = y + 64 >= top || listRect.top < frameRect.top + 48;
+          if ((headingVisible && stripsWatchable) || reachedByTravel || scrolledPast) {
+            close.dataset.foldRevealed = "1";
+            close.dispatchEvent(new Event(FOLD_DO_REVEAL));
+          }
+        }
       });
+      const lead = inners[0];
+      const leadFrame = lead?.parentElement;
+      const maxY = lead && leadFrame ? Math.max(1, lead.scrollHeight - leadFrame.clientHeight) : 1;
+      const y = travel * maxY;
+      const viewY = leadFrame?.clientHeight ?? 0;
       const current =
-        [...INNER_NAV].reverse().find((item) => progress >= item.at - 0.08)?.id ?? "home";
+        [...INNER_NAV]
+          .filter((item) => item.sel)
+          .reverse()
+          .find((item) => {
+            const node = lead?.querySelector<HTMLElement>(item.sel ?? "");
+            return (node?.offsetTop ?? 0) <= y + viewY * 0.48;
+          })?.id ?? "home";
       if (current !== navId) {
         navId = current;
         setActive(current);
@@ -307,7 +373,18 @@ export function FoldfolioHero() {
     const onJump = (event: Event) => {
       const target = (event.target as HTMLElement).closest("[data-fold-jump]");
       if (!target) return;
-      scrollHeroTo(section, Number((target as HTMLElement).dataset.foldJump));
+      const key = (target as HTMLElement).dataset.foldJump ?? "";
+      const numeric = Number(key);
+      if (key !== "" && !Number.isNaN(numeric) && Number.isFinite(numeric)) {
+        scrollHeroTo(section, numeric);
+        return;
+      }
+      const item = INNER_NAV.find((entry) => entry.id === key);
+      if (item?.outer) {
+        scrollToId(item.outer);
+        return;
+      }
+      scrollHeroTo(section, innerProgress(item?.sel ?? ".fold-inner-home"));
     };
     book.addEventListener("click", onJump);
 
@@ -351,7 +428,7 @@ export function FoldfolioHero() {
           trigger: section,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.45,
+          scrub: 0.52,
           pin,
           anticipatePin: 1,
           invalidateOnRefresh: true,
@@ -396,13 +473,19 @@ export function FoldfolioHero() {
           <p className="fold-finale-right">Web Developer</p>
         </div>
 
+        <div ref={cueRef} className="fold-explore" aria-hidden>
+          <span>SCROLL TO EXPLORE</span>
+          <i className="fold-explore-line" />
+          <ChevronDown size={14} strokeWidth={1.75} />
+        </div>
+
         <div className="fold-stage">
           <div className="fold-intro-device">
           <div ref={bookRef} className="fold-book">
             <div className="fold-cover">
               <div className="fold-face fold-face-inner">
                 <div className="fold-site-window">
-                  <InnerSite />
+                  <InnerSite time={time} anchors />
                 </div>
               </div>
               <div className="fold-face fold-face-lock">
@@ -414,7 +497,7 @@ export function FoldfolioHero() {
             <div className="fold-spine">
               <div className="fold-face fold-face-inner is-right">
                 <div className="fold-site-window">
-                  <InnerSite />
+                  <InnerSite time={time} />
                 </div>
               </div>
             </div>
@@ -425,7 +508,13 @@ export function FoldfolioHero() {
                   type="button"
                   className={active === item.id ? "is-on" : undefined}
                   onClick={() => {
-                    if (sectionRef.current) scrollHeroTo(sectionRef.current, item.at);
+                    if (item.outer) {
+                      scrollToId(item.outer);
+                      return;
+                    }
+                    if (sectionRef.current && item.sel) {
+                      scrollHeroTo(sectionRef.current, innerProgress(item.sel));
+                    }
                   }}
                 >
                   {item.label}
