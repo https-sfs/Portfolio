@@ -7,6 +7,7 @@ import { ServicesSection } from "@/components/services/ServicesSection";
 import { AboutSection } from "@/components/about/AboutSection";
 import { TechStackSection } from "@/components/stack/TechStackSection";
 import { ExperienceSection } from "@/components/experience/ExperienceSection";
+import { AchievementsSection } from "@/components/achievements/AchievementsSection";
 import { ContactSection } from "@/components/contact/ContactSection";
 
 export default function HomePage() {
@@ -21,6 +22,7 @@ export default function HomePage() {
         <AboutSection />
         <TechStackSection />
         <ExperienceSection />
+        <AchievementsSection />
         <ContactSection />
       </main>
       <Footer />
