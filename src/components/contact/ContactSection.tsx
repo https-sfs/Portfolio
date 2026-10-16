@@ -2,7 +2,7 @@
 
 import { type FormEvent, type ReactNode, useState } from "react";
 import { ArrowUpRight, Copy, Github, Linkedin } from "lucide-react";
-import { contactCopy, contactEmail, contactSubjects } from "@/data/contact";
+import { contactCopy, contactEmail, contactSubjects, formSubmitEndpoint } from "@/data/contact";
 import { Reveal } from "@/components/ui/Reveal";
 
 const serif = { fontFamily: "var(--font-serif), ui-serif, Georgia, serif" } as const;
@@ -33,8 +33,11 @@ export function ContactSection() {
   const [senderEmail, setSenderEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [sending, setSending] = useState(false);
 
   async function copyEmail() {
     try {
@@ -66,20 +69,66 @@ export function ContactSection() {
     }
   }
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (sending) return;
+
     const trimmedEmail = senderEmail.trim();
     const trimmedMessage = message.trim();
 
     if (!trimmedEmail || !subject || !trimmedMessage) {
+      setSuccess("");
       setError("Please add your email, a subject, and a message.");
       return;
     }
 
     setError("");
-    const body = `From: ${trimmedEmail}\n\n${trimmedMessage}`;
-    const href = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = href;
+    setSuccess("");
+    setSending(true);
+
+    try {
+      const response = await fetch(formSubmitEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: trimmedEmail,
+          _replyto: trimmedEmail,
+          _subject: `Portfolio contact: ${subject}`,
+          subject,
+          message: trimmedMessage,
+          _honey: honeypot,
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | { success?: boolean | string; message?: string }
+        | null;
+
+      const accepted = payload?.success === true || payload?.success === "true";
+      if (!response.ok || !accepted) {
+        setSuccess("");
+        setError(
+          payload?.message || "Could not send your message. Please try again.",
+        );
+        return;
+      }
+
+      setSenderEmail("");
+      setSubject("");
+      setMessage("");
+      setError("");
+      setSuccess(contactCopy.successLabel);
+    } catch {
+      setSuccess("");
+      setError("Could not send your message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -122,7 +171,19 @@ export function ContactSection() {
                 </p>
               </div>
 
-              <form className="flex min-w-0 flex-col lg:h-full" onSubmit={onSubmit} noValidate>
+              <form className="flex min-w-0 flex-col lg:h-full" onSubmit={onSubmit} noValidate aria-busy={sending}>
+                <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+                  <label htmlFor="contact-website">Website</label>
+                  <input
+                    id="contact-website"
+                    name="_honey"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(event) => setHoneypot(event.target.value)}
+                  />
+                </div>
                 <FieldRow label="TO">
                   <div className="flex min-w-0 items-center justify-between gap-3">
                     <span className="truncate text-[16px] text-[#F5F5F5]">{contactEmail}</span>
@@ -146,6 +207,7 @@ export function ContactSection() {
                     autoComplete="email"
                     inputMode="email"
                     required
+                    disabled={sending}
                     value={senderEmail}
                     onChange={(event) => setSenderEmail(event.target.value)}
                     placeholder={contactCopy.fromPlaceholder}
@@ -158,6 +220,7 @@ export function ContactSection() {
                     id="contact-subject"
                     name="subject"
                     required
+                    disabled={sending}
                     value={subject}
                     onChange={(event) => setSubject(event.target.value)}
                     className="w-full appearance-none bg-transparent pr-5 text-[15px] text-[#F5F5F5] outline-none sm:text-[16px] focus-visible:text-white"
@@ -187,6 +250,7 @@ export function ContactSection() {
                       name="message"
                       required
                       rows={2}
+                      disabled={sending}
                       value={message}
                       onChange={(event) => setMessage(event.target.value)}
                       placeholder={contactCopy.messagePlaceholder}
@@ -202,15 +266,21 @@ export function ContactSection() {
                   <span className="h-px flex-1 bg-[#3d3d3d]" />
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 font-mono text-[13px] uppercase tracking-[0.22em] text-white transition-opacity motion-safe:hover:opacity-70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+                    disabled={sending}
+                    className="inline-flex items-center gap-2 font-mono text-[13px] uppercase tracking-[0.22em] text-white transition-opacity disabled:cursor-wait disabled:opacity-60 motion-safe:hover:opacity-70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
                   >
-                    {contactCopy.sendLabel}
+                    {sending ? contactCopy.sendingLabel : contactCopy.sendLabel}
                     <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.75} />
                   </button>
                 </div>
                 {error ? (
                   <p role="alert" className="mt-3 font-mono text-[12px] uppercase tracking-[0.16em] text-[#A8A8A8]">
                     {error}
+                  </p>
+                ) : null}
+                {success ? (
+                  <p role="status" className="mt-3 font-mono text-[12px] uppercase tracking-[0.16em] text-[#F5F5F5]">
+                    {success}
                   </p>
                 ) : null}
                 <p aria-live="polite" className="sr-only">

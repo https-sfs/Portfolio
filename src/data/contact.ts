@@ -1,4 +1,5 @@
 export const contactEmail = "syedasaboohishafia@gmail.com";
+export const formSubmitEndpoint = `https://formsubmit.co/ajax/${contactEmail}`;
 
 export const contactCopy = {
   eyebrow: "LET'S CONNECT",
@@ -13,6 +14,8 @@ export const contactCopy = {
   subjectPlaceholder: "Choose a reason for your message.",
   messagePlaceholder: "Drop me a line with your project details, and I'll get back to you as soon as possible!",
   sendLabel: "SEND MESSAGE",
+  sendingLabel: "SENDING…",
+  successLabel: "MESSAGE SENT — THANK YOU. I'LL BE IN TOUCH SOON.",
   copyLabel: "COPY EMAIL",
   copiedLabel: "COPIED",
   footerName: "SABOOHI FATIMA SHAFIA",

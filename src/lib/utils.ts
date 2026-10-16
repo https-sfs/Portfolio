@@ -6,6 +6,9 @@ export function prefersReducedMotion() {
 export function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
+  const header = document.querySelector(".site-header");
+  const offset = Math.round((header?.getBoundingClientRect().height ?? 64) + 20);
+  el.style.scrollMarginTop = `${offset}px`;
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 

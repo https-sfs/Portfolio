@@ -2,65 +2,60 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
-import { useTheme } from "next-themes";
-import { navItems, site } from "@/data/site";
+import { ArrowUpRight, Menu, X } from "lucide-react";
+import { navItems, navSpyIds, site } from "@/data/site";
 import { scrollToId } from "@/lib/utils";
 
 export function Header() {
   const [active, setActive] = useState("work");
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [navReady, setNavReady] = useState(false);
-  const { resolvedTheme, setTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const hero = document.getElementById("home");
-    const update = () => {
+    let ticking = false;
+
+    const measure = () => {
+      ticking = false;
+
       if (!hero) {
         setNavReady(true);
-        return;
+      } else {
+        const ready = hero.getBoundingClientRect().bottom < window.innerHeight * 0.92;
+        setNavReady(ready);
+        if (!ready) setOpen(false);
       }
-      const ready = hero.getBoundingClientRect().bottom < window.innerHeight * 0.92;
-      setNavReady(ready);
-      if (!ready) setOpen(false);
+
+      const header = document.querySelector(".site-header");
+      const spyLine = (header?.getBoundingClientRect().bottom ?? 80) + 28;
+      let current: (typeof navSpyIds)[number] = navSpyIds[0];
+
+      for (const id of navSpyIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= spyLine) current = id;
+      }
+
+      setActive(current);
     };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
-  }, []);
-
-  useEffect(() => {
-    const ids = ["work", "services", "experience", "about", "contact"];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id && navItems.some((item) => item.id === visible.target.id)) {
-          setActive(visible.target.id);
-        }
-      },
-      { rootMargin: "-35% 0px -50% 0px", threshold: [0.15, 0.35, 0.6] },
-    );
-
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   const go = (id: string) => {
+    setActive(id);
     setOpen(false);
     scrollToId(id);
   };
@@ -98,7 +93,7 @@ export function Header() {
                 key={item.id}
                 type="button"
                 onClick={() => go(item.id)}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                className={`rounded-full px-2.5 py-1.5 text-sm font-medium transition xl:px-3 ${
                   active === item.id
                     ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
                     : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
@@ -115,18 +110,6 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              aria-label="Toggle dark mode"
-              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-              className="hidden h-9 w-9 items-center justify-center rounded-full border border-neutral-200/80 text-neutral-700 transition hover:scale-105 active:scale-95 sm:inline-flex dark:border-neutral-700 dark:text-neutral-200"
-            >
-              {mounted && resolvedTheme === "dark" ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </button>
             <button
               type="button"
               onClick={() => go("contact")}
